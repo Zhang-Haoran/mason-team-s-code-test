@@ -49,6 +49,22 @@ function setGame() {
   bindStartButton()
 }
 
+function resetGame() {
+  // reset game setting
+  game.score = 0
+  game.level = 1
+  game.timer = 60
+  game.timerDisplay = null
+  game.scoreDisplay = null
+  game.levelDisplay = null
+  game.timerInterval = null
+  game.startButton = null
+  game.preSelected = null
+  game.currentSelecting = null
+  game.cardArray = []
+  game.cardDisplay = 0
+}
+
 function setGameBoard() {
   // set game level based on current level
   game.levelDisplay = game.level
@@ -97,26 +113,6 @@ function setGameBoard() {
   updateTimerDisplay()
 }
 
-function handleRestart() {
-  // restart game
-  DOMcontrol.gameBoard.innerHTML = ""
-  DOMcontrol.scoreDisplay.innerHTML = 0
-  resetGame()
-  startGame()
-}
-
-function pickRandomCard() {
-  // random cardContent
-  const cardContent = CARD_TECHS[Math.floor(Math.random() * CARD_TECHS.length)]
-  // html for each card element
-  const cardElmentHtml = `
-    <div class='card ${cardContent}'>
-    <div class='card__face card__face--front'></div>
-    <div class='card__face card__face--back'></div>
-    </div>`
-  return cardElmentHtml
-}
-
 function startGame() {
   //First time start game
   game.startButton = "End Game"
@@ -125,6 +121,36 @@ function startGame() {
   bindCardClick()
 }
 
+function nextLevel() {
+  game.level++
+  if (game.level === 4) handleGameOver()
+  // rest game board
+  game.cardArray = []
+  DOMcontrol.gameBoard.innerHTML = ""
+  setGameBoard()
+  bindCardClick()
+}
+
+function handleRestart() {
+  // restart game
+  DOMcontrol.gameBoard.innerHTML = ""
+  DOMcontrol.scoreDisplay.innerHTML = 0
+  resetGame()
+  startGame()
+}
+
+function handleGameOver() {
+  // Game over. display score
+  game.startButton = "New Game"
+  DOMcontrol.startButton.innerHTML = "New Game"
+  //stop timer count down
+  clearInterval(game.timerInterval)
+  alert(`Your score is: ${game.score}`)
+}
+
+/*******************************************
+/     card manipulation
+/******************************************/
 function handleCardFlip() {
   // Two cards selected. Won't flip any more cards
   if (game.preSelected !== null && game.currentSelecting !== null) return null
@@ -171,39 +197,16 @@ function compareCard() {
   }, 1500)
 }
 
-function nextLevel() {
-  game.level++
-  if (game.level === 4) handleGameOver()
-  // rest game board
-  game.cardArray = []
-  DOMcontrol.gameBoard.innerHTML = ""
-  setGameBoard()
-  bindCardClick()
-}
-
-function resetGame() {
-  // reset game setting
-  game.score = 0
-  game.level = 1
-  game.timer = 60
-  game.timerDisplay = null
-  game.scoreDisplay = null
-  game.levelDisplay = null
-  game.timerInterval = null
-  game.startButton = null
-  game.preSelected = null
-  game.currentSelecting = null
-  game.cardArray = []
-  game.cardDisplay = 0
-}
-
-function handleGameOver() {
-  // Game over. display score
-  game.startButton = "New Game"
-  DOMcontrol.startButton.innerHTML = "New Game"
-  //stop timer count down
-  clearInterval(game.timerInterval)
-  alert(`Your score is: ${game.score}`)
+function pickRandomCard() {
+  // random cardContent
+  const cardContent = CARD_TECHS[Math.floor(Math.random() * CARD_TECHS.length)]
+  // html for each card element
+  const cardElmentHtml = `
+    <div class='card ${cardContent}'>
+    <div class='card__face card__face--front'></div>
+    <div class='card__face card__face--back'></div>
+    </div>`
+  return cardElmentHtml
 }
 
 function shuffleArray(array) {
