@@ -93,7 +93,13 @@ function setGameBoard() {
   game.cardArray.forEach((card) => (DOMcontrol.gameBoard.innerHTML += card))
 }
 
-function handleRestart() {}
+// restart game
+function handleRestart() {
+  DOMcontrol.gameBoard.innerHTML = ""
+  DOMcontrol.scoreDisplay.innerHTML = 0
+  resetGame()
+  startGame()
+}
 
 function pickRandomCard() {
   // random cardContent
@@ -108,6 +114,8 @@ function pickRandomCard() {
 }
 
 function startGame() {
+  game.startButton = "End Game"
+  DOMcontrol.startButton.innerHTML = "End Game"
   setGameBoard()
   bindCardClick()
 }
@@ -160,6 +168,7 @@ function compareCard() {
 
 function nextLevel() {
   game.level++
+  if (game.level === 4) handleGameOver()
   // rest game board
   game.cardArray = []
   DOMcontrol.gameBoard.innerHTML = ""
@@ -167,7 +176,28 @@ function nextLevel() {
   bindCardClick()
 }
 
-function handleGameOver() {}
+// reset game setting
+function resetGame() {
+  game.score = 0
+  game.level = 1
+  game.timer = 60
+  game.timerDisplay = null
+  game.scoreDisplay = null
+  game.levelDisplay = null
+  game.timerInterval = null
+  game.startButton = null
+  game.preSelected = null
+  game.currentSelecting = null
+  game.cardArray = []
+  game.cardDisplay = 0
+}
+
+// Game over. display score
+function handleGameOver() {
+  game.startButton = "New Game"
+  DOMcontrol.startButton.innerHTML = "New Game"
+  alert(`Your score is: ${game.score}`)
+}
 
 /*******************************************
 /     UI update
@@ -186,11 +216,12 @@ function bindStartButton() {
   DOMcontrol.startButton.addEventListener("click", function () {
     // actions based on different button value
     const actions = {
-      null: startGame(),
-      restart: handleRestart(),
-      end: handleGameOver(),
+      null: startGame,
+      "New Game": handleRestart,
+      "End Game": handleGameOver,
     }
-    actions[game.startButton]
+    // conduct action
+    actions[game.startButton]()
   })
 }
 
