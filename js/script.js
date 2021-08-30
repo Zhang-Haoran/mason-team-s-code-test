@@ -49,7 +49,6 @@ function setGame() {
   bindStartButton()
 }
 
-// set Game board
 function setGameBoard() {
   // set game level based on current level
   game.levelDisplay = game.level
@@ -95,8 +94,8 @@ function setGameBoard() {
   game.cardArray.forEach((card) => (DOMcontrol.gameBoard.innerHTML += card))
 }
 
-// restart game
 function handleRestart() {
+  // restart game
   DOMcontrol.gameBoard.innerHTML = ""
   DOMcontrol.scoreDisplay.innerHTML = 0
   resetGame()
@@ -116,6 +115,7 @@ function pickRandomCard() {
 }
 
 function startGame() {
+  //First time start game
   game.startButton = "End Game"
   DOMcontrol.startButton.innerHTML = "End Game"
   setGameBoard()
@@ -178,8 +178,8 @@ function nextLevel() {
   bindCardClick()
 }
 
-// reset game setting
 function resetGame() {
+  // reset game setting
   game.score = 0
   game.level = 1
   game.timer = 60
@@ -194,14 +194,15 @@ function resetGame() {
   game.cardDisplay = 0
 }
 
-// Game over. display score
 function handleGameOver() {
+  // Game over. display score
   game.startButton = "New Game"
   DOMcontrol.startButton.innerHTML = "New Game"
   alert(`Your score is: ${game.score}`)
 }
 
 function shuffleArray(array) {
+  // Reorder array
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
     const temp = array[i]
