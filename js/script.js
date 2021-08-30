@@ -201,6 +201,8 @@ function handleGameOver() {
   // Game over. display score
   game.startButton = "New Game"
   DOMcontrol.startButton.innerHTML = "New Game"
+  //stop timer count down
+  clearInterval(game.timerInterval)
   alert(`Your score is: ${game.score}`)
 }
 
