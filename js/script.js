@@ -89,6 +89,8 @@ function setGameBoard() {
     game.cardArray.push(card)
     game.cardArray.push(card)
   }
+  // reorder array element
+  shuffleArray(game.cardArray)
   // set game card display
   game.cardArray.forEach((card) => (DOMcontrol.gameBoard.innerHTML += card))
 }
@@ -197,6 +199,15 @@ function handleGameOver() {
   game.startButton = "New Game"
   DOMcontrol.startButton.innerHTML = "New Game"
   alert(`Your score is: ${game.score}`)
+}
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    const temp = array[i]
+    array[i] = array[j]
+    array[j] = temp
+  }
 }
 
 /*******************************************
