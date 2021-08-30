@@ -25,6 +25,7 @@ const game = {
   startButton: null,
   preSelected: null,
   currentSelecting: null,
+  cardArray: [],
 }
 // register DOM element for further using
 const DOMcontrol = {
@@ -71,12 +72,6 @@ function setGameBoard() {
       boardColumn: 6,
     },
   }
-  // html for each card element
-  const cardElmentHtml = `
-  <div class='card'>
-  <div class='card__face card__face--front'/>
-  <div class='card__face card__face--back'/>
-  </div>`
   // set game level display text
   DOMcontrol.levelDisplay.text = game.levelDisplay
   // set gameboard css to grid layout
@@ -84,16 +79,30 @@ function setGameBoard() {
   grid-template-columns: repeat(${
     setLevel[game.levelDisplay].boardColumn
   }, 1fr)`
-  // set game card display
-  for (let i = 0; i < setLevel[game.levelDisplay].cardNum; i++) {
-    //add card element
-    DOMcontrol.gameBoard.innerHTML += cardElmentHtml
+  // set card array
+  for (let i = 0; i < setLevel[game.levelDisplay].cardNum / 2; i++) {
+    const card = pickRandomCard()
+    // add two same style card into card array
+    game.cardArray.push(card)
+    game.cardArray.push(card)
   }
+  // set game card display
+  game.cardArray.forEach((card) => (DOMcontrol.gameBoard.innerHTML += card))
 }
 
 function handleRestart() {}
 
-function setCard() {}
+function pickRandomCard() {
+  // random cardContent
+  const cardContent = CARD_TECHS[Math.floor(Math.random() * CARD_TECHS.length)]
+  // html for each card element
+  const cardElmentHtml = `
+    <div class='card ${cardContent}'>
+    <div class='card__face card__face--front'></div>
+    <div class='card__face card__face--back'></div>
+    </div>`
+  return cardElmentHtml
+}
 
 function startGame() {
   setGameBoard()
