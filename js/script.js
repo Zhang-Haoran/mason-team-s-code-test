@@ -92,6 +92,9 @@ function setGameBoard() {
   shuffleArray(game.cardArray)
   // set game card display
   game.cardArray.forEach((card) => (DOMcontrol.gameBoard.innerHTML += card))
+  // reset timer
+  game.timer = 60
+  updateTimerDisplay()
 }
 
 function handleRestart() {
@@ -219,7 +222,22 @@ function updateScore() {
   game.cardDisplay -= 2
 }
 
-function updateTimerDisplay() {}
+function updateTimerDisplay() {
+  game.timerDisplay = game.timer
+  DOMcontrol.timeDisplayBar.innerHTML = `${game.timer}s`
+  //every time start next level or new game, reset time interval
+  clearInterval(game.timerInterval)
+  if (!game.timerDisplay) return null
+  //reset bar width
+  DOMcontrol.timeDisplayBar.style.width = 100 + "%"
+  //every 1 second, change timerbar display
+  game.timerInterval = setInterval(function () {
+    game.timer -= 1
+    DOMcontrol.timeDisplayBar.innerHTML = `${game.timer}s`
+    DOMcontrol.timeDisplayBar.style.width = 100 * (game.timer / 60) + "%"
+    if (game.timer === 0) handleGameOver()
+  }, 1000)
+}
 
 /*******************************************
 /     bindings
