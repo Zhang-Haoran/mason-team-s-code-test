@@ -26,6 +26,7 @@ const game = {
   preSelected: null,
   currentSelecting: null,
   cardArray: [],
+  cardDisplay: 0,
 }
 // register DOM element for further using
 const DOMcontrol = {
@@ -72,15 +73,17 @@ function setGameBoard() {
       boardColumn: 6,
     },
   }
+  // number of card display
+  game.cardDisplay = setLevel[game.levelDisplay].cardNum
   // set game level display text
-  DOMcontrol.levelDisplay.text = game.levelDisplay
+  DOMcontrol.levelDisplay.innerHTML = game.levelDisplay
   // set gameboard css to grid layout
   DOMcontrol.gameBoard.style.cssText += `
   grid-template-columns: repeat(${
     setLevel[game.levelDisplay].boardColumn
   }, 1fr)`
   // set card array
-  for (let i = 0; i < setLevel[game.levelDisplay].cardNum / 2; i++) {
+  for (let i = 0; i < game.cardDisplay / 2; i++) {
     const card = pickRandomCard()
     // add two same style card into card array
     game.cardArray.push(card)
@@ -112,17 +115,67 @@ function startGame() {
 function handleCardFlip() {
   // Two cards selected. Won't flip any more cards
   if (game.preSelected !== null && game.currentSelecting !== null) return null
+  // Flip card
   this.classList.add("card--flipped")
+  // record selected card for further comparison
+  if (!game.preSelected) {
+    game.preSelected = this
+    return null
+  }
+  game.currentSelecting = this
+  compareCard()
 }
 
-function nextLevel() {}
+function compareCard() {
+  // click same card twice. Flip it back
+  if (game.preSelected === game.currentSelecting) {
+    game.preSelected.classList.remove("card--flipped")
+    game.currentSelecting.classList.remove("card--flipped")
+    game.preSelected = null
+    game.currentSelecting = null
+    return null
+  }
+  // select two cards with same style (same class name). Calculate score
+  if (game.preSelected.className === game.currentSelecting.className) {
+    unBindCardClick(game.preSelected)
+    unBindCardClick(game.currentSelecting)
+    game.preSelected = null
+    game.currentSelecting = null
+    game.score += Math.pow(game.level, 2) * game.timer
+    updateScore()
+    // no card left
+    if (!game.cardDisplay) {
+      setTimeout(() => nextLevel(), 1000)
+    }
+    return null
+  }
+  // select two card with different style
+  setTimeout(function () {
+    game.preSelected.classList.remove("card--flipped")
+    game.currentSelecting.classList.remove("card--flipped")
+    game.preSelected = null
+    game.currentSelecting = null
+  }, 1500)
+}
+
+function nextLevel() {
+  game.level++
+  // rest game board
+  game.cardArray = []
+  DOMcontrol.gameBoard.innerHTML = ""
+  setGameBoard()
+  bindCardClick()
+}
 
 function handleGameOver() {}
 
 /*******************************************
 /     UI update
 /******************************************/
-function updateScore() {}
+function updateScore() {
+  DOMcontrol.scoreDisplay.innerHTML = game.score
+  game.cardDisplay -= 2
+}
 
 function updateTimerDisplay() {}
 
