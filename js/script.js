@@ -23,7 +23,8 @@ const game = {
   levelDisplay: null,
   timerInterval: null,
   startButton: null,
-  // and much more
+  preSelected: null,
+  currentSelecting: null,
 }
 // register DOM element for further using
 const DOMcontrol = {
@@ -52,8 +53,8 @@ function setGameBoard() {
   game.levelDisplay = game.level
   // remove game instructions
   DOMcontrol.gameInstruction.remove()
-  // set cards number and layout columns
-  const setCard = {
+  // set cards number and layout columns based on level
+  const setLevel = {
     // level 1 has 4 cards
     1: {
       cardNum: 4,
@@ -80,9 +81,11 @@ function setGameBoard() {
   DOMcontrol.levelDisplay.text = game.levelDisplay
   // set gameboard css to grid layout
   DOMcontrol.gameBoard.style.cssText += `
-  grid-template-columns: repeat(${setCard[game.levelDisplay].boardColumn}, 1fr)`
+  grid-template-columns: repeat(${
+    setLevel[game.levelDisplay].boardColumn
+  }, 1fr)`
   // set game card display
-  for (let i = 0; i < setCard[game.levelDisplay].cardNum; i++) {
+  for (let i = 0; i < setLevel[game.levelDisplay].cardNum; i++) {
     //add card element
     DOMcontrol.gameBoard.innerHTML += cardElmentHtml
   }
@@ -90,11 +93,18 @@ function setGameBoard() {
 
 function handleRestart() {}
 
+function setCard() {}
+
 function startGame() {
   setGameBoard()
+  bindCardClick()
 }
 
-function handleCardFlip() {}
+function handleCardFlip() {
+  // Two cards selected. Won't flip any more cards
+  if (game.preSelected !== null && game.currentSelecting !== null) return null
+  this.classList.add("card--flipped")
+}
 
 function nextLevel() {}
 
@@ -122,6 +132,12 @@ function bindStartButton() {
   })
 }
 
-function unBindCardClick(card) {}
+function unBindCardClick(card) {
+  card.removeEventListener("click", handleCardFlip)
+}
 
-function bindCardClick() {}
+function bindCardClick() {
+  // select all card element and add event listener
+  const cards = document.querySelectorAll(".card")
+  cards.forEach((card) => card.addEventListener("click", handleCardFlip))
+}
